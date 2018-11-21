@@ -86,7 +86,10 @@ def build_estimator(config, embedding_size=4, hidden_units=None):
   Returns:
     A DNNClassifier
   """
-  (age, education, default) = INPUT_COLUMNS
+  (age, job, marital, education, default,
+  housing, loan, contact, month, day_of_week,
+  campaign, pdays, previous, poutcome, emp_var_rate,
+  cons_price_idx, cons_conf_idx, euribor3m, nr_employed) = INPUT_COLUMNS
 
   # Continuous columns can be converted to categorical via bucketization
   age_buckets = tf.feature_column.bucketized_column(

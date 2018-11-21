@@ -60,8 +60,7 @@ def train_and_evaluate(hparams):
 
   train_spec = tf.estimator.TrainSpec(
       train_input,
-      max_steps=hparams.train_steps,
-      name='bank-marketing-train')
+      max_steps=hparams.train_steps)
 
   exporter = tf.estimator.FinalExporter(
       'bank-marketing', model.SERVING_FUNCTIONS[hparams.export_format])
