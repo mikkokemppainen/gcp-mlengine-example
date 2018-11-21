@@ -8,7 +8,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations under
 # the License.
-"""Defines a deep neural network model for classification on structured data."""
+
+"""Defines a neural network model for classification on structured data."""
 
 from __future__ import absolute_import
 from __future__ import division
@@ -34,45 +35,45 @@ LABELS = ['no', 'yes']
 # Additionally, provide metadata about the feature.
 INPUT_COLUMNS = [
     tf.feature_column.numeric_column('age'),
-    #tf.feature_column.categorical_column_with_vocabulary_list(
-    #    'job', ['admin.', 'blue-collar', 'entrepreneur', 'housemaid',
-    #            'management', 'retired', 'self-employed', 'services',
-    #            'student', 'technician', 'unemployed', 'unknown']),
-    #tf.feature_column.categorical_column_with_vocabulary_list(
-    #    'marital', ['divorced', 'married', 'single', 'unknown']),
+    tf.feature_column.categorical_column_with_vocabulary_list(
+        'job', ['admin.', 'blue-collar', 'entrepreneur', 'housemaid',
+                'management', 'retired', 'self-employed', 'services',
+                'student', 'technician', 'unemployed', 'unknown']),
+    tf.feature_column.categorical_column_with_vocabulary_list(
+        'marital', ['divorced', 'married', 'single', 'unknown']),
     tf.feature_column.categorical_column_with_vocabulary_list(
         'education', ['basic.4y', 'basic.6y', 'basic.9y',
                       'high.school', 'illiterate', 'professional.course',
                       'university.degree', 'unknown']),
     tf.feature_column.categorical_column_with_vocabulary_list(
         'default', ['yes', 'no']),
-    #tf.feature_column.categorical_column_with_vocabulary_list(
-    #    'housing', ['yes', 'no']),
-    #tf.feature_column.categorical_column_with_vocabulary_list(
-    #    'loan', ['yes', 'no']),
-    #tf.feature_column.categorical_column_with_vocabulary_list(
-    #    'contact', ['cellular', 'telephone']),
-    #tf.feature_column.categorical_column_with_vocabulary_list(
-    #    'month', ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
-    #                'jul', 'aug', 'sep', 'oct', 'nov', 'dec']),
-    #tf.feature_column.categorical_column_with_vocabulary_list(
-    #    'day_of_week', ['mon', 'tue', 'wed', 'thu', 'fri']),
-    #tf.feature_column.numeric_column('campaign'),
-    #tf.feature_column.numeric_column('pdays'),
-    #tf.feature_column.numeric_column('previous'),
-    #tf.feature_column.categorical_column_with_vocabulary_list(
-    #    'poutcome', ['failure', 'nonexistent', 'success']),
-    #tf.feature_column.numeric_column('emp_var_rate'),
-    #tf.feature_column.numeric_column('cons_price_idx'),
-    #tf.feature_column.numeric_column('cons_conf_idx'),
-    #tf.feature_column.numeric_column('euribor3m'),
-    #tf.feature_column.numeric_column('nr_employed'),
+    tf.feature_column.categorical_column_with_vocabulary_list(
+        'housing', ['yes', 'no']),
+    tf.feature_column.categorical_column_with_vocabulary_list(
+        'loan', ['yes', 'no']),
+    tf.feature_column.categorical_column_with_vocabulary_list(
+        'contact', ['cellular', 'telephone']),
+    tf.feature_column.categorical_column_with_vocabulary_list(
+        'month', ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
+                  'jul', 'aug', 'sep', 'oct', 'nov', 'dec']),
+    tf.feature_column.categorical_column_with_vocabulary_list(
+        'day_of_week', ['mon', 'tue', 'wed', 'thu', 'fri']),
+    tf.feature_column.numeric_column('campaign'),
+    tf.feature_column.numeric_column('pdays'),
+    tf.feature_column.numeric_column('previous'),
+    tf.feature_column.categorical_column_with_vocabulary_list(
+        'poutcome', ['failure', 'nonexistent', 'success']),
+    tf.feature_column.numeric_column('emp_var_rate'),
+    tf.feature_column.numeric_column('cons_price_idx'),
+    tf.feature_column.numeric_column('cons_conf_idx'),
+    tf.feature_column.numeric_column('euribor3m'),
+    tf.feature_column.numeric_column('nr_employed'),
 ]
 
 UNUSED_COLUMNS = set(CSV_COLUMNS) - {col.name for col in INPUT_COLUMNS} - {LABEL_COLUMN}
 
 
-def build_estimator(config, embedding_size=8, hidden_units=None):
+def build_estimator(config, embedding_size=4, hidden_units=None):
   """Build a deep neural network model for predicting subscription.
 
   Args:
@@ -87,32 +88,32 @@ def build_estimator(config, embedding_size=8, hidden_units=None):
   """
   (age, education, default) = INPUT_COLUMNS
 
+  # Continuous columns can be converted to categorical via bucketization
   age_buckets = tf.feature_column.bucketized_column(
       age, boundaries=[18, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75])
 
   feature_columns = [
-      # Continuous columns can be converted to categorical via bucketization
       tf.feature_column.embedding_column(age_buckets, dimension=embedding_size),
       # Use embedding columns for high dimensional vocabularies
-      #tf.feature_column.embedding_column(job, dimension=embedding_size),
+      tf.feature_column.embedding_column(job, dimension=embedding_size),
       # Use indicator columns for low dimensional vocabularies
-      #tf.feature_column.indicator_column(marital),
+      tf.feature_column.indicator_column(marital),
       tf.feature_column.embedding_column(education, dimension=embedding_size),
       tf.feature_column.indicator_column(default),
-      #tf.feature_column.indicator_column(housing),
-      #tf.feature_column.indicator_column(loan),
-      #tf.feature_column.indicator_column(contact),
-      #tf.feature_column.embedding_column(month, dimension=embedding_size),
-      #tf.feature_column.indicator_column(day_of_week),
-      #campaign,
-      #pdays,
-      #previous,
-      #tf.feature_column.indicator_column(poutcome),
-      #emp_var_rate,
-      #cons_price_idx,
-      #cons_conf_idx,
-      #euribor3m,
-      #nr_employed
+      tf.feature_column.indicator_column(housing),
+      tf.feature_column.indicator_column(loan),
+      tf.feature_column.indicator_column(contact),
+      tf.feature_column.embedding_column(month, dimension=embedding_size),
+      tf.feature_column.indicator_column(day_of_week),
+      campaign,
+      pdays,
+      previous,
+      tf.feature_column.indicator_column(poutcome),
+      emp_var_rate,
+      cons_price_idx,
+      cons_conf_idx,
+      euribor3m,
+      nr_employed
   ]
 
   return tf.estimator.DNNClassifier(

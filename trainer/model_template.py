@@ -8,9 +8,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations under
 # the License.
-"""Defines a Wide + Deep model for classification on structured data.
 
-Tutorial on wide and deep: https://www.tensorflow.org/tutorials/wide_and_deep/
+"""A template for a neural network classification model on structured data.
 """
 
 from __future__ import absolute_import
@@ -41,22 +40,7 @@ UNUSED_COLUMNS = set(CSV_COLUMNS) - {col.name for col in INPUT_COLUMNS} - \
 
 
 def build_estimator(config, embedding_size=4, hidden_units=None):
-  """Build a wide and deep model for predicting income category.
-
-  Wide and deep models use deep neural nets to learn high level abstractions
-  about complex features or interactions between such features.
-  These models then combined the outputs from the DNN with a linear regression
-  performed on simpler features. This provides a balance between power and
-  speed that is effective on many structured data problems.
-
-  You can read more about wide and deep models here:
-  https://research.googleblog.com/2016/06/wide-deep-learning-better-together-with.html
-
-  To define model we can use the prebuilt DNNCombinedLinearClassifier class,
-  and need only define the data transformations particular to our dataset, and
-  then
-  assign these (potentially) transformed features to either the DNN, or linear
-  regression portion of the model.
+  """Build a deep neural network model for classification.
 
   Args:
     config: (tf.contrib.learn.RunConfig) defining the runtime environment for
@@ -66,7 +50,7 @@ def build_estimator(config, embedding_size=4, hidden_units=None):
     hidden_units: [int], the layer sizes of the DNN (input layer first)
 
   Returns:
-    A DNNCombinedLinearClassifier
+    A DNNClassifier
   """
   (int_column, float_column, string_column) = INPUT_COLUMNS
 

@@ -59,7 +59,9 @@ def train_and_evaluate(hparams):
   )
 
   train_spec = tf.estimator.TrainSpec(
-      train_input, max_steps=hparams.train_steps)
+      train_input,
+      max_steps=hparams.train_steps,
+      name='bank-marketing-train')
 
   exporter = tf.estimator.FinalExporter(
       'bank-marketing', model.SERVING_FUNCTIONS[hparams.export_format])
@@ -127,7 +129,7 @@ if __name__ == '__main__':
   parser.add_argument(
       '--first-layer-size',
       help='Number of nodes in the first layer of the DNN',
-      default=16,
+      default=32,
       type=int)
   parser.add_argument(
       '--num-layers', help='Number of layers in the DNN', default=4, type=int)
