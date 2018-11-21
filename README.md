@@ -40,7 +40,7 @@ BUCKET_NAME=$GOOGLE_CLOUD_PROJECT-mlengine
 REGION=europe-west1
 ```
 
-* Create a storage bucket to
+* Create a storage bucket to hold the data
 ```
 gsutil mb -l $REGION gs://$BUCKET_NAME
 ```
@@ -54,8 +54,7 @@ gsutil cp bank-additional/bank-additional-full.csv gs://$BUCKET_NAME/data/
 
 ### Data preparation
 
-In this section we split the data into training and evaluation sets
-using Cloud Datalab.
+In this section we split the data into training, evaluation, and testing sets using Cloud Datalab.
 
 1. Enable Compute Engine API
 ```
@@ -69,50 +68,7 @@ datalab create --zone europe-west1-b --disk-size-gb 20 --no-create-repository my
 
 3. Open the Datalab web UI and upload the `data_preparation.ipynb` notebook in the notebooks folder
 
-or, alternatively, create a new notebook and follow the instructions below
-
-```
-import os
-project_id = os.environ['VM_PROJECT']
-```
-
-* In the notebook, read the data file from storage
-```
-%gcs read -o gs://$GOOGLE_CLOUD_PROJECT-mlengine/data/bank-additional-full.csv -v data_file
-```
-
-* Import required libraries
-```
-import pandas as pd
-from io import BytesIO
-```
-
-* Read the data into a pandas dataframe
-```
-data = pd.read_csv(BytesIO(data_file), sep=';')
-```
-
-* Drop the `duration` column (see the explanation at the dataset source)
-```
-data.drop(columns='duration', inplace=True)
-```
-
-* Split the data into training and evaluation sets
-```
-data_train = data.sample(frac=0.7)
-data_eval = data.drop(data_train.index)
-```
-
-* Write into CSV
-```
-data_train.to_csv('bank_data_train.csv', index=False, header=False)
-data_eval.to_csv('bank_data_eval.csv', index=False, header=False)
-```
-
-4. Copy training and evaluation datasets into Cloud Storage
-```
-!gsutil cp bank_data*.csv gs://$GOOGLE_CLOUD_PROJECT-mlengine/data/
-```
+4. Run the notebook
 
 * Close the Datalab web UI, interrupt the server of Cloud Shell with `CTRL-C` and delete the Datalab instance by
 ```
@@ -121,7 +77,7 @@ datalab delete --delete-disk my-datalab
 
 ### Building the model
 
-Our model is based on the template `model.py`
+Our model is based on the template `model_template.py`
 
 1. In the beginning of  we list the columns from our data
 ```py
@@ -267,3 +223,5 @@ gcloud ml-engine predict \
     --json-instances \
     test.json
 ```
+
+### Predict
