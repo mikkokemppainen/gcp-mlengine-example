@@ -26,7 +26,7 @@ CSV_COLUMNS = [
 ]
 CSV_COLUMN_DEFAULTS = [[0], [''], [''], [''], [''],
                        [''], [''], [''], [''], [''],
-                       [0], [0], [0], [''], [0.0],
+                       [0.0], [0.0], [0.0], [''], [0.0],
                        [0.0], [0.0], [0.0], [0.0], ['']]
 LABEL_COLUMN = 'subscribed'
 LABELS = ['no', 'yes']
@@ -96,8 +96,8 @@ def build_estimator(config, embedding_size=4, hidden_units=None):
       age, boundaries=[18, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75])
 
   feature_columns = [
-      tf.feature_column.embedding_column(age_buckets, dimension=embedding_size),
       # Use embedding columns for high dimensional vocabularies
+      tf.feature_column.embedding_column(age_buckets, dimension=embedding_size),
       tf.feature_column.embedding_column(job, dimension=embedding_size),
       # Use indicator columns for low dimensional vocabularies
       tf.feature_column.indicator_column(marital),
@@ -122,6 +122,8 @@ def build_estimator(config, embedding_size=4, hidden_units=None):
   return tf.estimator.DNNClassifier(
       config=config,
       feature_columns=feature_columns,
+      optimizer=tf.train.AdamOptimizer(learning_rate=0.001),
+      batch_norm=True,
       hidden_units=hidden_units or [32, 24, 16, 8])
 
 
