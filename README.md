@@ -235,7 +235,7 @@ gcloud ml-engine jobs submit training $JOB_NAME \
 
 1. Set the environment variable
 ```
-MODEL_NAME=bank_marketing
+MODEL_NAME=bank-marketing
 ```
 
 2. Create a model in ML Engine
@@ -250,7 +250,7 @@ gsutil ls -r $OUTPUT_PATH/
 
 4. Set the environment variable with the correct value for `trial_number` and `<timestamp>`
 ```
-MODEL_BINARIES=$OUTPUT_PATH/<trial_number>/export/bank_marketing/<timestamp>/
+MODEL_BINARIES=$OUTPUT_PATH/<trial_number>/export/bank-marketing/<timestamp>/
 ```
 
 5. Create a version of the model
@@ -261,21 +261,12 @@ gcloud ml-engine versions create v1 \
     --runtime-version 1.10
 ```
 
-6.  In the repository folder, inspect the test instance
-```
-cat test.json
-```
-
-7. Get the prediction for the test instance
-```
-gcloud ml-engine predict \
-    --model $MODEL_NAME \
-    --version v1 \
-    --json-instances \
-    test.json
-```
 
 ### Predict
+
+1. Upload and open the `model_predictions.ipynb` notebook in Datalab
+
+2. Run it and inspect the results
 
 ### Clean up
 

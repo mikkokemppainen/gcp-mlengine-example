@@ -17,9 +17,9 @@ trainingInput:
         scaleType: UNIT_LINEAR_SCALE
       - parameterName: scale-factor
         type: DOUBLE
-        minValue: 0.7
-        maxValue: 1.0
-        scaleType: UNIT_REVERSE_LOG_SCALE
+        minValue: 0.6
+        maxValue: 0.8
+        scaleType: UNIT_LINEAR_SCALE
       - parameterName: embedding-size
         type: INTEGER
         minValue: 2
